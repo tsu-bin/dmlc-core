@@ -253,6 +253,9 @@ class JSONWriter {
   template<typename ValueType>
   inline void WriteObjectKeyValue(const std::string &key,
                                   const ValueType &value);
+
+  inline void WriteObjectKey(const std::string &key);
+
   /*!
    * \brief Write seperator of array, before writing next element.
    * User can proceed to call writer->Write to write next item
@@ -888,6 +891,17 @@ inline void JSONWriter::WriteObjectKeyValue(const std::string &key,
   Extend(os_, "\": ");
   scope_counter_.back() += 1;
   json::Handler<ValueType>::Write(this, value);
+}
+
+inline void JSONWriter::WriteObjectKey(const std::string &key) {
+  if (scope_counter_.back() > 0) {
+    Extend(os_, ", ");
+  }
+  WriteSeperator();
+  Extend(os_, '\"');
+  Extend(os_, key);
+  Extend(os_, "\": ");
+  scope_counter_.back() += 1;
 }
 
 inline void JSONWriter::WriteArraySeperator() {
